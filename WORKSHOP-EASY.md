@@ -4,7 +4,7 @@
 
 ## Let's understand what we need to build first and why?
 
-The UI annotator Chrome extension runs in the browser. The AI coding agent (Kiro CLI / Claude Code) runs in a terminal. There's no direct connection between them because a Chrome extension can't spawn shell processes, execute Python scripts, or edit files on disk. It can only make HTTP requests.
+The UI annotator Chrome extension runs in the browser. The AI coding agent (Kiro CLI / Claude Code / Cursor headless agent CLI) runs in a terminal. There's no direct connection between them because a Chrome extension can't spawn shell processes, execute Python scripts, or edit files on disk. It can only make HTTP requests.
 
 This is why, you need something like an **agent bridge** that is a local HTTP server that connects the two:
 
@@ -37,6 +37,8 @@ The agent bridge is already built for you at `tools/agent-bridge/agent-bridge.js
    kiro-cli chat -a --no-interactive --effort max "$(cat .tmp/apply-prompt.txt)"
   # Claude
    claude --dangerously-skip-permissions -p "$(cat /absolute/path/to/.tmp/apply-prompt.txt)"
+  # Cursor
+   cat .tmp/apply-prompt.txt | agent -p --force --workspace some-podcast-app
    ```
 3. CLI edits source files → Vite hot-reloads the page
 4. Bridge polls the dev server to confirm it's responding
@@ -250,14 +252,19 @@ The parameters that passed in the above command are:
 | `--feedback .tmp/feedback.json` | Where the bridge writes the annotations JSON so the AI CLI can read them. |
 | `--app-dir some-podcast-app` | Your app's workspace root. The bridge runs the AI CLI and verification inside this directory. |
 ---
-Default AI CLI is Kiro and if you are using Claude Code add the `--cli claude` at the end:
+The available AI CLI options are:
+1. Kiro: default, no extra flag needed
+2. Claude Code: add `--cli claude`
+3. Cursor headless agent CLI: add `--cli cursor` (or `--cli agent`) when `agent` is installed on `PATH`
+
 ```bash
 node tools/agent-bridge/agent-bridge.js ... --cli claude
+node tools/agent-bridge/agent-bridge.js ... --cli cursor
 ```
 
 You should see:
 ```
-[agent-bridge] Using CLI: kiro # or claude
+[agent-bridge] Using CLI: kiro # or claude or cursor
 [agent-bridge] Listening on http://localhost:9999
 ```
 
