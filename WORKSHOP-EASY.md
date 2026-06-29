@@ -38,7 +38,7 @@ The agent bridge is already built for you at `tools/agent-bridge/agent-bridge.js
   # Claude
    claude --dangerously-skip-permissions -p "$(cat /absolute/path/to/.tmp/apply-prompt.txt)"
   # Cursor
-   cat .tmp/apply-prompt.txt | agent -p --force --workspace some-podcast-app
+   cat .tmp/apply-prompt.txt | agent -p --force --workspace <app-dir>
    ```
 3. CLI edits source files → Vite hot-reloads the page
 4. Bridge polls the dev server to confirm it's responding
